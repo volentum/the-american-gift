@@ -32,23 +32,40 @@
 .nav__name span{ color:var(--graphite); font-weight:400; }
 
 /* ---- hero ---- */
-.hero{ position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden; }
+.hero{ --veil:0.6; position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden; }
 .hero__bg{ position:absolute; inset:0; z-index:0; }
-.hero__bg img{ width:100%; height:100%; object-fit:cover; object-position:55% center; filter:grayscale(1) contrast(1.08); }
+.hero__bg img{ width:100%; height:100%; object-fit:cover; object-position:50% center; filter:grayscale(1) contrast(1.08); transition:opacity .3s ease; }
+/* Gradient veil over the photo — driven by --veil so it's tweakable (higher = darker) */
 .hero__bg::after{
   content:""; position:absolute; inset:0;
   background:
-    linear-gradient(90deg, rgba(17,22,29,.93) 0%, rgba(17,22,29,.74) 32%, rgba(17,22,29,.34) 62%, rgba(17,22,29,.12) 100%),
+    linear-gradient(90deg,
+      rgba(17,22,29,calc(var(--veil) + 0.2)) 0%,
+      rgba(17,22,29,var(--veil)) 34%,
+      rgba(17,22,29,calc(var(--veil) * 0.55)) 66%,
+      rgba(17,22,29,calc(var(--veil) * 0.28)) 100%),
     linear-gradient(0deg, rgba(17,22,29,.96) 0%, rgba(17,22,29,.5) 22%, transparent 46%);
 }
+.hero.no-photo .hero__bg img{ opacity:0; }
+.hero.no-photo .hero__bg{ background:radial-gradient(120% 90% at 72% 38%, #1f2a37 0%, var(--ink) 70%); }
 .hero .storm{ width:680px; height:680px; top:-110px; right:-200px; opacity:.26; z-index:1; mix-blend-mode:screen; }
-.hero__inner{ position:relative; z-index:2; padding-top:90px; padding-bottom:64px; width:100%; }
+
+/* The two-column hero — copy left, 3D book right */
+.hero__inner{
+  position:relative; z-index:2; padding-top:104px; padding-bottom:72px; width:100%;
+  display:grid; grid-template-columns:1.04fr .96fr; gap:clamp(28px,4.5vw,64px); align-items:center;
+}
+.hero__copy{ min-width:0; }
+.hero__book{ display:flex; justify-content:center; align-items:center; }
+.hero__book .book{ --bw:340px; --bh:calc(var(--bw) * 1.122); }
+/* placement variants */
+.hero__inner.book-left  .hero__copy{ order:2; }
+.hero__inner.book-left  .hero__book{ order:1; justify-content:flex-start; }
+.hero__inner.book-none{ grid-template-columns:1fr; }
+.hero__inner.book-none  .hero__book{ display:none; }
 .hero__tag{ display:flex; align-items:center; gap:14px; margin-bottom:26px; }
 .hero__tag .rule{ width:46px; height:3px; }
-.hero h1{
-  font-size:clamp(3.4rem, 9.2vw, 8.6rem);
-  max-width:14ch;
-}
+.hero h1{ font-size:clamp(3rem, 6.2vw, 6.2rem); max-width:12ch; }
 .hero h1 .gift{ color:var(--teal); }
 .hero__sub{
   font-size:clamp(1.05rem,2.1vw,1.5rem);
@@ -211,6 +228,13 @@
   .about__photo::after{ background:linear-gradient(0deg,var(--midnight),transparent 50%); }
   .pillars{ grid-template-columns:1fr; }
 }
+@media (max-width:860px){
+  .hero__inner{ grid-template-columns:1fr; gap:46px; }
+  .hero__book, .hero__inner.book-left .hero__book{ justify-content:flex-start; }
+  .hero__book .book{ --bw:248px; }
+  .hero__inner.book-left .hero__copy{ order:1; }
+  .hero__inner.book-left .hero__book{ order:2; }
+}
 @media (max-width:640px){
   .nav{ padding:16px 22px; }
   .nav__cta{ display:none; }
@@ -235,17 +259,28 @@
 <header class="hero section" id="top">
   <div class="hero__bg"><img src="assets/_Y1A7140.jpg" alt="Eddy Perez walking" /></div>
   <span class="storm storm--teal"></span>
-  <div class="wrap hero__inner">
-    <div class="hero__tag reveal">
-      <span class="rule rule--teal"></span>
-      <span class="kicker">A Book by Eddy Perez · Wiley</span>
+  <div class="wrap hero__inner book-right" id="heroInner">
+    <div class="hero__copy">
+      <div class="hero__tag reveal">
+        <span class="rule rule--teal"></span>
+        <span class="kicker">A Book by Eddy Perez · Wiley</span>
+      </div>
+      <h1 class="display reveal">The American <span class="gift">Gift</span></h1>
+      <p class="hero__sub reveal">How the mortgage industry's Old Guard screwed America — <em>and why true brokers are taking it back.</em></p>
+      <p class="hero__author reveal">By <strong>Eduardo G. Perez, Jr.</strong> — known across the industry as Eddy Perez</p>
+      <div class="hero__cta reveal">
+        <a class="btn btn--teal" href="#preorder">Pre-order the book</a>
+        <a class="btn btn--ghost" href="#about">Read the story</a>
+      </div>
     </div>
-    <h1 class="display reveal">The American <span class="gift">Gift</span></h1>
-    <p class="hero__sub reveal">How the mortgage industry's Old Guard screwed America — <em>and why true brokers are taking it back.</em></p>
-    <p class="hero__author reveal">By <strong>Eduardo G. Perez, Jr.</strong> — known across the industry as Eddy Perez</p>
-    <div class="hero__cta reveal">
-      <a class="btn btn--teal" href="#preorder">Pre-order the book</a>
-      <a class="btn btn--ghost" href="#about">Read the story</a>
+
+    <div class="hero__book reveal">
+      <div class="book" aria-label="The American Gift book cover">
+        <img class="book__cover" src="assets/cover-front.png" alt="The American Gift book cover" />
+        <div class="book__spine"></div>
+        <div class="book__pages"></div>
+        <div class="book__shadow"></div>
+      </div>
     </div>
   </div>
   <div class="hero__meta">Coming <span>Fall 2026</span></div>
