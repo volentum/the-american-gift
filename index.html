@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The American Gift — Eddy Perez | Pre-order</title>
+<!-- v2 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="assets/brand.css" />
+<style>
+/* ============ DIRECTION A — "THE STORM" (cinematic, teal-forward) ============ */
+.a-body{ background:var(--midnight); overflow-x:hidden; }
+
+/* ---- nav ---- */
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 40px;
+  transition:background .3s ease, padding .3s ease, border-color .3s ease;
+  border-bottom:1px solid transparent;
+}
+.nav.scrolled{ background:rgba(17,22,29,.86); backdrop-filter:blur(12px); padding:14px 40px; border-bottom:1px solid var(--line); }
+.nav__brand{ display:flex; align-items:center; gap:13px; text-decoration:none; }
+.mono{
+  width:34px; height:34px; border-radius:50%;
+  border:1.5px solid var(--teal); color:var(--teal);
+  display:grid; place-items:center;
+  font-weight:900; font-size:1rem; font-style:italic;
+}
+.nav__name{ font-weight:900; text-transform:uppercase; letter-spacing:.16em; font-size:.82rem; }
+.nav__name span{ color:var(--graphite); font-weight:400; }
+
+/* ---- hero ---- */
+.hero{ position:relative; min-height:100vh; display:flex; align-items:center; overflow:hidden; }
+.hero__bg{ position:absolute; inset:0; z-index:0; }
+.hero__bg img{ width:100%; height:100%; object-fit:cover; object-position:55% center; filter:grayscale(1) contrast(1.08); }
+.hero__bg::after{
+  content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(90deg, rgba(17,22,29,.93) 0%, rgba(17,22,29,.74) 32%, rgba(17,22,29,.34) 62%, rgba(17,22,29,.12) 100%),
+    linear-gradient(0deg, rgba(17,22,29,.96) 0%, rgba(17,22,29,.5) 22%, transparent 46%);
+}
+.hero .storm{ width:680px; height:680px; top:-110px; right:-200px; opacity:.26; z-index:1; mix-blend-mode:screen; }
+.hero__inner{ position:relative; z-index:2; padding-top:90px; padding-bottom:64px; width:100%; }
+.hero__tag{ display:flex; align-items:center; gap:14px; margin-bottom:26px; }
+.hero__tag .rule{ width:46px; height:3px; }
+.hero h1{
+  font-size:clamp(3.4rem, 9.2vw, 8.6rem);
+  max-width:14ch;
+}
+.hero h1 .gift{ color:var(--teal); }
+.hero__sub{
+  font-size:clamp(1.05rem,2.1vw,1.5rem);
+  font-weight:300; color:var(--bone);
+  max-width:30ch; margin:28px 0 0;
+  line-height:1.4;
+}
+.hero__sub em{ color:var(--graphite); font-style:italic; }
+.hero__author{ margin-top:30px; font-size:.95rem; color:var(--graphite); letter-spacing:.04em; }
+.hero__author strong{ color:var(--bone); font-weight:700; }
+.hero__cta{ display:flex; flex-wrap:wrap; gap:14px; margin-top:40px; }
+.hero__meta{
+  position:absolute; bottom:30px; right:40px; z-index:2;
+  text-align:right; font-weight:700; text-transform:uppercase;
+  letter-spacing:.28em; font-size:.72rem; color:var(--graphite);
+}
+.hero__meta span{ color:var(--copper-bright); }
+
+/* ---- generic section ---- */
+.band{ padding:clamp(80px,11vw,150px) 0; position:relative; }
+.band--ink{ background:var(--ink); }
+.eyebrow-row{ display:flex; align-items:center; gap:16px; margin-bottom:30px; }
+
+/* ---- manifesto ---- */
+.manifesto{ position:relative; overflow:hidden; }
+.manifesto .storm{ width:680px; height:680px; bottom:-220px; left:-220px; opacity:.28; }
+.manifesto__grid{ display:grid; grid-template-columns:1.15fr .85fr; gap:70px; align-items:start; }
+.manifesto h2{ font-size:clamp(2.6rem,5.6vw,5rem); }
+.manifesto h2 .br{ color:var(--teal); }
+.manifesto__lead{ font-size:clamp(1.15rem,2vw,1.5rem); color:var(--graphite); margin:30px 0 0; max-width:24ch; }
+.manifesto__body p{ color:var(--graphite); font-size:1.06rem; margin:0 0 1.4em; max-width:46ch; }
+.manifesto__body p strong{ color:var(--bone); font-weight:700; }
+.manifesto__close{
+  margin-top:18px; font-size:1.18rem; color:var(--bone);
+  border-left:3px solid var(--teal); padding-left:22px;
+}
+.versus{
+  margin-top:64px; display:grid; grid-template-columns:1fr 1fr; gap:0;
+  border:1px solid var(--line); border-radius:4px; overflow:hidden;
+}
+.versus__col{ padding:42px 40px; }
+.versus__col--not{ background:transparent; }
+.versus__col--with{ background:#0e1f1e; }
+.versus__col h4{ font-weight:900; text-transform:uppercase; letter-spacing:.18em; font-size:.78rem; margin:0 0 22px; }
+.versus__col--not h4{ color:var(--steel); }
+.versus__col--with h4{ color:var(--teal); }
+.versus__col ul{ list-style:none; margin:0; padding:0; }
+.versus__col li{ font-weight:900; text-transform:uppercase; font-size:clamp(1.4rem,2.6vw,2.1rem); line-height:1.15; margin:0 0 .35em; letter-spacing:-.01em; }
+.versus__col--not li{ color:var(--steel); }
+.versus__col--with li{ color:var(--bone); }
+.versus__col--with li span{ color:var(--teal); }
+
+/* ---- pillars (old guard) ---- */
+.guard__head{ max-width:62ch; margin-bottom:60px; }
+.guard__head h2{ font-size:clamp(2.4rem,5vw,4.4rem); }
+.guard__head h2 .hl{ color:var(--copper-bright); }
+.pillars{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.pillar{
+  background:var(--card-2); border:1px solid var(--line);
+  border-top:3px solid var(--copper); border-radius:4px;
+  padding:34px 30px; position:relative;
+}
+.pillar:nth-child(2){ border-top-color:var(--teal); }
+.pillar:nth-child(3){ border-top-color:var(--copper); }
+.pillar__num{ font-weight:900; font-size:.78rem; color:var(--copper-bright); letter-spacing:.2em; }
+.pillar:nth-child(2) .pillar__num{ color:var(--teal); }
+.pillar h3{ font-weight:900; text-transform:uppercase; font-size:1.5rem; margin:14px 0 4px; letter-spacing:.01em; }
+.pillar__tag{ font-style:italic; font-weight:300; color:var(--graphite); font-size:.95rem; margin-bottom:18px; }
+.pillar p{ color:var(--graphite); font-size:.98rem; margin:0 0 26px; }
+.pillar__ask{ border:1px solid var(--line); border-radius:3px; padding:14px 16px; }
+.pillar__ask span{ display:block; font-weight:700; text-transform:uppercase; letter-spacing:.16em; font-size:.66rem; color:var(--copper-bright); margin-bottom:6px; }
+.pillar:nth-child(2) .pillar__ask span{ color:var(--teal); }
+.pillar__ask strong{ font-weight:700; font-size:.95rem; color:var(--bone); }
+.guard__quote{
+  margin-top:54px; background:var(--ink); border-radius:4px; padding:46px 50px;
+  font-style:italic; font-weight:300; font-size:clamp(1.4rem,3vw,2.3rem);
+  text-transform:uppercase; line-height:1.2; color:var(--bone);
+  position:relative; border-left:5px solid var(--copper);
+}
+
+/* ---- book section ---- */
+.book-sec{ background:var(--ink); position:relative; overflow:hidden; }
+.book-sec .storm{ width:620px; height:620px; top:-160px; right:-160px; opacity:.3; }
+.book-grid{ display:grid; grid-template-columns:.9fr 1.1fr; gap:80px; align-items:center; }
+.book-stage{ display:flex; justify-content:center; }
+.book-sec h2{ font-size:clamp(2.2rem,4.4vw,3.8rem); margin:0 0 4px; }
+.book-sec h2 .gift{ color:var(--teal); }
+.book-sub{ font-weight:700; color:var(--graphite); font-size:1.05rem; margin:0 0 26px; max-width:40ch; line-height:1.4; }
+.book-sub em{ color:var(--copper-bright); font-style:italic; }
+.toc{ list-style:none; margin:26px 0 34px; padding:0; border-top:1px solid var(--line); }
+.toc li{ display:flex; gap:18px; padding:15px 0; border-bottom:1px solid var(--line); align-items:baseline; }
+.toc__n{ font-weight:900; color:var(--teal); font-size:.8rem; letter-spacing:.14em; min-width:62px; }
+.toc__t{ font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:.96rem; }
+.toc__t small{ display:block; font-weight:300; text-transform:none; letter-spacing:0; color:var(--graphite); font-size:.86rem; margin-top:3px; }
+
+/* ---- about ---- */
+.about{ position:relative; }
+.about-grid{ display:grid; grid-template-columns:1fr 1fr; gap:0; align-items:stretch; }
+.about__photo{ position:relative; min-height:560px; }
+.about__photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(1) contrast(1.04); }
+.about__photo::after{ content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 60%, var(--midnight)); }
+.about__text{ padding:clamp(40px,6vw,90px); display:flex; flex-direction:column; justify-content:center; }
+.about__text h2{ font-size:clamp(2.2rem,4.6vw,3.8rem); margin:18px 0 0; }
+.about__text p{ color:var(--graphite); font-size:1.05rem; max-width:48ch; }
+.dedication{
+  margin-top:30px; font-style:italic; font-weight:300;
+  font-size:1.32rem; color:var(--bone); line-height:1.4;
+  border-left:3px solid var(--copper); padding-left:22px; max-width:34ch;
+}
+
+/* ---- pre-order ---- */
+.preorder{ background:var(--ink); position:relative; overflow:hidden; }
+.preorder .storm{ width:720px; height:720px; bottom:-260px; right:-200px; opacity:.34; }
+.preorder__inner{ max-width:760px; margin:0 auto; text-align:center; position:relative; z-index:2; }
+.preorder h2{ font-size:clamp(2.4rem,5.4vw,4.6rem); margin:18px 0 0; }
+.preorder h2 .gift{ color:var(--teal); }
+.preorder__lead{ color:var(--graphite); font-size:1.15rem; max-width:46ch; margin:22px auto 0; }
+.form{ margin:42px auto 0; max-width:560px; }
+.form__row{ display:flex; gap:12px; }
+.form input{
+  flex:1; min-width:0; font-family:var(--font); font-size:1rem;
+  background:var(--card); border:1px solid var(--line); color:var(--bone);
+  padding:1.05em 1.2em; border-radius:2px; outline:none;
+  transition:border-color .2s ease;
+}
+.form input::placeholder{ color:#7c828b; }
+.form input:focus{ border-color:var(--teal); }
+.form__note{ font-size:.82rem; color:var(--steel); margin-top:14px; letter-spacing:.02em; }
+.form__success{
+  display:none; padding:30px; border:1px solid var(--teal);
+  background:#0e1f1e; border-radius:4px; font-size:1.1rem;
+}
+.form__success strong{ color:var(--teal); }
+.form.done .form__row, .form.done .form__note{ display:none; }
+.form.done .form__success{ display:block; }
+.retail{ margin-top:38px; }
+.retail__label{ font-size:.72rem; text-transform:uppercase; letter-spacing:.28em; color:var(--steel); margin-bottom:16px; }
+.retail__btns{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.retail .btn{ position:relative; }
+.retail .btn small{ position:absolute; top:-9px; right:-9px; background:var(--copper); color:var(--bone); font-size:.56rem; letter-spacing:.1em; padding:3px 7px; border-radius:20px; }
+
+/* ---- footer ---- */
+.foot{ background:var(--midnight); border-top:1px solid var(--line); padding:46px 0 40px; }
+.foot__grid{ display:flex; justify-content:space-between; align-items:center; gap:30px; flex-wrap:wrap; }
+.foot__brand{ display:flex; align-items:center; gap:13px; }
+.foot__meta{ font-size:.8rem; color:var(--steel); letter-spacing:.06em; }
+.foot__meta strong{ color:var(--graphite); font-weight:700; }
+
+/* ---- reveal ---- */
+.reveal{ opacity:0; transform:translateY(26px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.in{ opacity:1; transform:none; }
+@media (prefers-reduced-motion:reduce){ .reveal{ opacity:1; transform:none; } }
+
+/* ---- responsive ---- */
+@media (max-width:980px){
+  .manifesto__grid{ grid-template-columns:1fr; gap:44px; }
+  .book-grid{ grid-template-columns:1fr; gap:50px; }
+  .about-grid{ grid-template-columns:1fr; }
+  .about__photo{ min-height:420px; }
+  .about__photo::after{ background:linear-gradient(0deg,var(--midnight),transparent 50%); }
+  .pillars{ grid-template-columns:1fr; }
+}
+@media (max-width:640px){
+  .nav{ padding:16px 22px; }
+  .nav__cta{ display:none; }
+  .versus{ grid-template-columns:1fr; }
+  .form__row{ flex-direction:column; }
+  .hero__meta{ right:22px; }
+}
+</style>
+</head>
+<body class="a-body">
+
+<!-- ========================= NAV ========================= -->
+<nav class="nav" id="nav">
+  <a class="nav__brand" href="#top">
+    <span class="mono">E</span>
+    <span class="nav__name">The American Gift<br><span>Eddy Perez · Fall 2026</span></span>
+  </a>
+  <a class="btn btn--teal nav__cta" href="#preorder">Reserve your copy</a>
+</nav>
+
+<!-- ========================= HERO ========================= -->
+<header class="hero section" id="top">
+  <div class="hero__bg"><img src="assets/_Y1A7140.jpg" alt="Eddy Perez walking" /></div>
+  <span class="storm storm--teal"></span>
+  <div class="wrap hero__inner">
+    <div class="hero__tag reveal">
+      <span class="rule rule--teal"></span>
+      <span class="kicker">A Book by Eddy Perez · Wiley</span>
+    </div>
+    <h1 class="display reveal">The American <span class="gift">Gift</span></h1>
+    <p class="hero__sub reveal">How the mortgage industry's Old Guard screwed America — <em>and why true brokers are taking it back.</em></p>
+    <p class="hero__author reveal">By <strong>Eduardo G. Perez, Jr.</strong> — known across the industry as Eddy Perez</p>
+    <div class="hero__cta reveal">
+      <a class="btn btn--teal" href="#preorder">Pre-order the book</a>
+      <a class="btn btn--ghost" href="#about">Read the story</a>
+    </div>
+  </div>
+  <div class="hero__meta">Coming <span>Fall 2026</span></div>
+</header>
+
+<!-- ========================= MANIFESTO ========================= -->
+<section class="band band--ink manifesto section">
+  <span class="storm storm--teal"></span>
+  <div class="wrap">
+    <div class="manifesto__grid">
+      <div>
+        <div class="eyebrow-row reveal"><span class="rule rule--teal"></span><span class="kicker">The Big Idea</span></div>
+        <h2 class="display reveal">The system<br><span class="br">was broken.</span><br>They called it<br>normal. It wasn't.</h2>
+        <p class="manifesto__lead reveal">The gap between how the mortgage industry should work — and how it actually works.</p>
+      </div>
+      <div class="manifesto__body reveal">
+        <p>A family walks into a bank because they trust the name. They assume the institution will give them the best option.</p>
+        <p><strong>But what if the best option was never shown to them?</strong></p>
+        <p>What if the loan they received was not the best loan for their life — but the easiest loan for the institution's system, margins, and internal incentives?</p>
+        <p class="manifesto__close">That is the gap <em>The American Gift</em> was written to close.</p>
+      </div>
+    </div>
+
+    <div class="versus reveal">
+      <div class="versus__col versus__col--not">
+        <h4>What this book is not</h4>
+        <ul>
+          <li>Not with theory.</li>
+          <li>Not with complaints.</li>
+          <li>Not another opinion.</li>
+        </ul>
+      </div>
+      <div class="versus__col versus__col--with">
+        <h4>What it is</h4>
+        <ul>
+          <li>With <span>truth.</span></li>
+          <li>With <span>solutions.</span></li>
+          <li>A <span>blueprint.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= OLD GUARD ========================= -->
+<section class="band guard section">
+  <div class="wrap">
+    <div class="guard__head reveal">
+      <div class="eyebrow-row"><span class="rule"></span><span class="kicker kicker--copper">The Old Guard's Control System</span></div>
+      <h2 class="display">The three <span class="hl">pillars</span> of the Old Guard</h2>
+      <p class="lead" style="margin-top:18px;max-width:60ch;">The Old Guard does not keep control with one tactic. It survives through a system: unnecessary cost, limited voice, and hidden information.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar reveal">
+        <div class="pillar__num">01</div>
+        <h3>Overhead</h3>
+        <div class="pillar__tag">The Manufactured Complexity Tax</div>
+        <p>More layers. More departments. More people touching the same file. Complexity gets sold as safety — but often becomes cost extraction.</p>
+        <div class="pillar__ask"><span>Ask</span><strong>Who is adding value — and who is just adding cost?</strong></div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar__num">02</div>
+        <h3>Taxation</h3>
+        <div class="pillar__tag">The Originator Exploitation System</div>
+        <p>Originators generate the revenue, carry the pressure, and own the client trust — while layers above them take their piece without giving real control.</p>
+        <div class="pillar__ask"><span>Ask</span><strong>Am I building my business — or funding someone else's overhead?</strong></div>
+      </div>
+      <div class="pillar reveal">
+        <div class="pillar__num">03</div>
+        <h3>Exclusion</h3>
+        <div class="pillar__tag">The Secret Profit Game</div>
+        <p>The Old Guard survives on information asymmetry. Margins, pricing, fees, and real costs stay hidden so consumers and originators cannot challenge the system.</p>
+        <div class="pillar__ask"><span>Ask</span><strong>What am I not being shown?</strong></div>
+      </div>
+    </div>
+    <div class="guard__quote reveal">A broken system survives by making itself feel too complicated to question.</div>
+  </div>
+</section>
+
+<!-- ========================= BOOK / NEW GUARD ========================= -->
+<section class="band book-sec section">
+  <span class="storm storm--teal"></span>
+  <div class="wrap">
+    <div class="book-grid">
+      <div class="book-stage reveal">
+        <div class="book" aria-label="The American Gift book cover">
+          <img class="book__cover" src="assets/cover-front.png" alt="The American Gift book cover" />
+          <div class="book__spine"></div>
+          <div class="book__pages"></div>
+          <div class="book__shadow"></div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="eyebrow-row"><span class="rule rule--teal"></span><span class="kicker">The New Guard Rises</span></div>
+        <h2 class="display">Built on <span class="gift">clarity,</span><br>not confusion.</h2>
+        <p class="book-sub">The future of mortgage belongs to operators who build around <em>transparency, choice, speed, and advocacy.</em> This is the blueprint.</p>
+        <ul class="toc">
+          <li><span class="toc__n">PART I</span><span class="toc__t">Meet the Old Guard<small>Pale, male, stale, and frail.</small></span></li>
+          <li><span class="toc__n">PART II</span><span class="toc__t">The Reign of Terror<small>The P&amp;L scam, wolves in sheep's clothing, and the real villains of 2008.</small></span></li>
+          <li><span class="toc__n">PART III</span><span class="toc__t">The New Guard Rises<small>The new mindset, why brokers win, and how to join the revolution.</small></span></li>
+          <li><span class="toc__n">PART IV</span><span class="toc__t">After the Storm<small>Leaving them better — and the new mortgage landscape.</small></span></li>
+        </ul>
+        <a class="btn btn--teal" href="#preorder">Pre-order The American Gift</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= ABOUT ========================= -->
+<section class="band about section" id="about" style="padding:0;">
+  <div class="about-grid">
+    <div class="about__photo reveal"><img src="assets/_Y1A7342.jpg" alt="Eddy Perez" /></div>
+    <div class="about__text reveal">
+      <div class="eyebrow-row"><span class="rule"></span><span class="kicker kicker--copper">About the Author</span></div>
+      <h2 class="display">Eddy Perez</h2>
+      <p>Eduardo G. Perez, Jr. is the Founder and CEO of EPM, a Top 50 mortgage company and one of the fastest-growing firms in the nation. He serves as Chairman of MORPAC, the political action committee for the Mortgage Bankers Association, and sits on the MBA Board of Directors. A Cuban-American entrepreneur known across the industry as <em>"The Perfect Storm,"</em> Eddy leads with honor, duty, discipline, and gratitude — values that define his mission to build a better tomorrow for families, communities, and the mortgage profession.</p>
+      <p class="dedication">"To my father, who traded his homeland for my American Gift."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= PRE-ORDER ========================= -->
+<section class="band preorder section" id="preorder">
+  <span class="storm storm--teal"></span>
+  <div class="wrap">
+    <div class="preorder__inner">
+      <div class="eyebrow-row reveal" style="justify-content:center;"><span class="rule rule--teal"></span><span class="kicker">Join the Movement</span></div>
+      <h2 class="display reveal">Pre-order <span class="gift">The American Gift</span></h2>
+      <p class="preorder__lead reveal">Reserve your copy before the storm hits. Be first to know when pre-orders open — and get presale updates from Eddy along the way.</p>
+
+      <form class="form reveal" id="preorderForm" novalidate>
+        <div class="form__row">
+          <input type="text" name="name" placeholder="First name" aria-label="First name" />
+          <input type="email" name="email" placeholder="Your email address" aria-label="Email address" required />
+          <button type="submit" class="btn btn--teal">Notify me</button>
+        </div>
+        <p class="form__note">No spam. Just the launch date and presale access. The Old Guard built a system on confusion — we won't.</p>
+        <div class="form__success" role="status">
+          <strong>You're on the list.</strong> We'll email you the moment pre-orders go live for <em>The American Gift</em>.
+        </div>
+      </form>
+
+      <div class="retail reveal">
+        <div class="retail__label">Buy from your retailer</div>
+        <div class="retail__btns">
+          <a class="btn btn--ghost" href="#" onclick="return false;">Amazon <small>Soon</small></a>
+          <a class="btn btn--ghost" href="#" onclick="return false;">Barnes &amp; Noble <small>Soon</small></a>
+          <a class="btn btn--ghost" href="#" onclick="return false;">Wiley <small>Soon</small></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================= FOOTER ========================= -->
+<footer class="foot section">
+  <div class="wrap foot__grid">
+    <div class="foot__brand">
+      <span class="mono">E</span>
+      <span class="nav__name">The American Gift<br><span>by Eduardo G. Perez, Jr.</span></span>
+    </div>
+    <div class="foot__meta">Published by <strong>Wiley</strong> · Coming Fall 2026 &nbsp;·&nbsp; © 2026 Eduardo G. Perez, Jr.</div>
+  </div>
+</footer>
+
+<script>
+// nav shadow on scroll
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 40), {passive:true});
+
+// reveal on scroll
+const io = new IntersectionObserver((es) => {
+  es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.12});
+document.querySelectorAll('.reveal').forEach((el,i) => {
+  el.style.transitionDelay = (Math.min(i%6,5)*60)+'ms';
+  io.observe(el);
+});
+
+// ===================== PRE-ORDER CAPTURE =====================
+// TO GO LIVE: paste your HighLevel Inbound Webhook URL between the quotes below.
+// In HighLevel:  Automation ▸ Workflows ▸ create/open a workflow ▸ add an
+// "Inbound Webhook" trigger ▸ copy the webhook URL it generates ▸ paste it here.
+// The form sends { name, email, source, page, submitted_at } as JSON.
+// While this is left empty, the form still validates and shows the success
+// message, but submissions are only kept locally (a safe demo — nothing is sent).
+const HIGHLEVEL_WEBHOOK_URL = "";
+
+const form = document.getElementById('preorderForm');
+const submitBtn = form.querySelector('button[type="submit"]');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!ok){ form.email.focus(); form.email.style.borderColor = '#B56F48'; return; }
+
+  const payload = {
+    name, email,
+    source: 'The American Gift — pre-order page',
+    page: location.href,
+    submitted_at: new Date().toISOString()
+  };
+
+  if (HIGHLEVEL_WEBHOOK_URL) {
+    // Send the lead to HighLevel.
+    const label = submitBtn.textContent;
+    submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
+    try {
+      const res = await fetch(HIGHLEVEL_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch (err) {
+      // Let the visitor retry instead of silently losing the lead.
+      console.error('Pre-order submit failed:', err);
+      submitBtn.disabled = false; submitBtn.textContent = label;
+      form.email.style.borderColor = '#B56F48';
+      return;
+    }
+  } else {
+    // No webhook configured yet — keep a local copy so nothing is lost in testing.
+    try {
+      const list = JSON.parse(localStorage.getItem('tag_waitlist')||'[]');
+      list.push({ name, email, at: Date.now() });
+      localStorage.setItem('tag_waitlist', JSON.stringify(list));
+    } catch(_){}
+  }
+
+  form.classList.add('done');
+});
+</script>
+</body>
+</html>

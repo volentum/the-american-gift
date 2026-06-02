@@ -1,0 +1,142 @@
+/* ============================================================
+   THE AMERICAN GIFT — Brand foundations
+   Palette + type from taj_ep brand guide
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400&display=swap');
+
+:root{
+  /* primary */
+  --midnight:   #1B232E;   /* Midnight Steel  */
+  --ink:        #11161D;   /* deeper near-black for depth */
+  --steel:      #4A4F57;   /* Storm Silver */
+  --graphite:   #BFC5CD;   /* Graphite Force */
+  /* secondary */
+  --copper:     #B56F48;   /* Ember Copper */
+  --bone:       #F6F3EF;   /* American Bone White */
+  --teal:       #00B6B0;   /* Electric Teal */
+  /* derived */
+  --copper-bright: #cd8259;
+  --teal-bright:   #1ad3cd;
+  --line:       rgba(191,197,205,0.16);
+  --card:       #222b37;
+  --card-2:     #1a222d;
+
+  --maxw: 1240px;
+  --font: 'Roboto', system-ui, sans-serif;
+}
+
+*{ box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+body{
+  margin:0;
+  font-family:var(--font);
+  font-weight:300;
+  background:var(--midnight);
+  color:var(--bone);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+}
+img{ display:block; max-width:100%; }
+a{ color:inherit; }
+
+/* ---- type scale ---- */
+.kicker{
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.32em;
+  font-size:0.72rem;
+  color:var(--teal);
+}
+.kicker--copper{ color:var(--copper-bright); }
+.kicker--muted{ color:var(--graphite); }
+
+.display{
+  font-weight:900;
+  text-transform:uppercase;
+  line-height:0.95;
+  letter-spacing:-0.01em;
+  margin:0;
+}
+.lead{
+  font-weight:300;
+  color:var(--graphite);
+  line-height:1.55;
+}
+
+/* ---- buttons ---- */
+.btn{
+  display:inline-flex; align-items:center; gap:0.6em;
+  font-family:var(--font);
+  font-weight:700; text-transform:uppercase; letter-spacing:0.12em;
+  font-size:0.82rem;
+  padding:1.05em 1.8em;
+  border:none; border-radius:2px; cursor:pointer;
+  text-decoration:none;
+  transition:transform .18s ease, background .18s ease, box-shadow .18s ease, color .18s ease;
+}
+.btn--teal{ background:var(--teal); color:var(--ink); }
+.btn--teal:hover{ background:var(--teal-bright); transform:translateY(-2px); box-shadow:0 12px 30px -10px var(--teal); }
+.btn--copper{ background:var(--copper); color:var(--bone); }
+.btn--copper:hover{ background:var(--copper-bright); transform:translateY(-2px); box-shadow:0 12px 30px -10px var(--copper); }
+.btn--ghost{ background:transparent; color:var(--bone); border:1px solid var(--line); }
+.btn--ghost:hover{ border-color:var(--graphite); transform:translateY(-2px); }
+
+/* ---- accent rule ---- */
+.rule{ width:64px; height:4px; background:var(--copper); border:none; margin:0; }
+.rule--teal{ background:var(--teal); }
+
+/* ---- storm ring motif ---- */
+.storm{
+  position:absolute; pointer-events:none; z-index:0;
+  background-repeat:no-repeat; background-size:contain;
+  opacity:.5;
+}
+.storm--teal{ background-image:url('storm-ring-teal.svg'); }
+.storm--copper{ background-image:url('storm-ring-copper.svg'); }
+.storm--silver{ background-image:url('storm-ring-silver.svg'); }
+
+.section{ position:relative; z-index:1; }
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 40px; }
+
+/* ---- 3D book mockup (img cover, real depth) ---- */
+.book{
+  --bw: 300px; --bh: 337px; --bd: 34px;     /* matches cover-front ratio 0.891 */
+  width:var(--bw); height:var(--bh);
+  position:relative; transform-style:preserve-3d;
+  transform:perspective(1700px) rotateY(-26deg) rotateX(3deg);
+  transition:transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.book:hover{ transform:perspective(1700px) rotateY(-14deg) rotateX(2deg); }
+.book__cover{
+  position:absolute; inset:0; width:100%; height:100%;
+  object-fit:cover; display:block;
+  border-radius:2px 5px 5px 2px;
+  transform:translateZ(calc(var(--bd) / 2));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
+}
+.book__spine{
+  position:absolute; top:0; left:0; width:var(--bd); height:100%;
+  transform-origin:left center;
+  transform:rotateY(-90deg) translateX(calc(var(--bd) / -2));
+  background:linear-gradient(90deg,#0b0f15,#1a232e 55%,#0d121a);
+  border-radius:2px 0 0 2px;
+}
+.book__pages{
+  position:absolute; top:2px; right:0; height:calc(100% - 4px); width:var(--bd);
+  transform-origin:right center;
+  transform:rotateY(90deg) translateX(calc(var(--bd) / 2));
+  background:repeating-linear-gradient(0deg,#e9e4db,#e9e4db 1px,#cfc8bd 2px,#e9e4db 3px);
+  border-radius:0 3px 3px 0;
+}
+.book__shadow{
+  position:absolute; left:0; right:-12%; bottom:-9%; height:46px;
+  background:radial-gradient(ellipse at 45% 50%, rgba(0,0,0,.55), transparent 72%);
+  filter:blur(9px); transform:rotateX(78deg); z-index:-1;
+}
+
+/* selection */
+::selection{ background:var(--teal); color:var(--ink); }
+
+@media (max-width:720px){
+  .wrap{ padding:0 22px; }
+}
