@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Pre-orders — The American Gift</title>
+<link rel="stylesheet" href="../assets/brand.css" />
+<style>
+  body{ min-height:100vh; }
+  .admin{ max-width:1040px; margin:0 auto; padding:42px 24px 90px; }
+  .mono{
+    width:34px; height:34px; border-radius:50%;
+    border:1.5px solid var(--teal); color:var(--teal);
+    display:grid; place-items:center; flex:none;
+    font-weight:900; font-size:1rem; font-style:italic;
+  }
+
+  /* ---- login gate ---- */
+  .gate{ max-width:380px; margin:9vh auto 0; text-align:center; }
+  .gate .mono{ width:48px; height:48px; font-size:1.35rem; margin:0 auto 24px; }
+  .gate h1{ font-size:1.8rem; margin:0 0 8px; }
+  .gate p{ color:var(--graphite); margin:0 0 28px; font-size:.96rem; }
+  .field{ margin-bottom:12px; }
+  input[type=email], input[type=password]{
+    width:100%; font-family:var(--font); font-size:1rem;
+    background:var(--card); border:1px solid var(--line); color:var(--bone);
+    padding:.95em 1.1em; border-radius:2px; outline:none; transition:border-color .2s ease;
+  }
+  input::placeholder{ color:#7c828b; }
+  input:focus{ border-color:var(--teal); }
+  .gate .btn{ width:100%; justify-content:center; margin-top:6px; }
+  .err{ color:var(--copper-bright); font-size:.86rem; min-height:1.2em; margin-top:12px; }
+
+  /* ---- list panel ---- */
+  .admin__brand{ display:flex; align-items:center; gap:13px; }
+  .admin__brand b{ font-weight:900; text-transform:uppercase; letter-spacing:.16em; font-size:.82rem; line-height:1.3; }
+  .admin__brand b span{ color:var(--graphite); font-weight:400; letter-spacing:.04em; }
+  .bar{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:34px 0 22px; }
+  .bar h1{ font-size:1.7rem; margin:0; }
+  .bar h1 small{ display:block; font-weight:400; text-transform:none; letter-spacing:0; color:var(--graphite); font-size:.8rem; margin-top:6px; }
+  .bar__actions{ display:flex; gap:10px; }
+  .btn--sm{ padding:.72em 1.2em; font-size:.74rem; }
+  .table-wrap{ border:1px solid var(--line); border-radius:6px; overflow:auto; max-height:72vh; }
+  table{ width:100%; border-collapse:collapse; font-size:.92rem; }
+  th, td{ text-align:left; padding:13px 16px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th{ font-weight:700; text-transform:uppercase; letter-spacing:.12em; font-size:.67rem; color:var(--graphite); background:var(--card-2); position:sticky; top:0; }
+  tr:last-child td{ border-bottom:none; }
+  td.email{ color:var(--bone); }
+  td.muted{ color:var(--steel); }
+  .empty{ padding:54px; text-align:center; color:var(--graphite); }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+<div class="admin">
+
+  <!-- ===== LOGIN ===== -->
+  <section id="gate" class="gate">
+    <div class="mono">E</div>
+    <h1 class="display">Pre-order List</h1>
+    <p>Sign in to view who's reserved <em>The American Gift</em>.</p>
+    <form id="loginForm" novalidate>
+      <div class="field"><input type="email" id="email" placeholder="Email" autocomplete="username" required /></div>
+      <div class="field"><input type="password" id="password" placeholder="Password" autocomplete="current-password" required /></div>
+      <button type="submit" class="btn btn--teal" id="loginBtn">Sign in</button>
+      <div class="err" id="loginErr" role="alert"></div>
+    </form>
+  </section>
+
+  <!-- ===== LIST ===== -->
+  <section id="panel" class="hidden">
+    <div class="admin__brand"><span class="mono">E</span><b>The American Gift<br><span>Pre-order admin</span></b></div>
+    <div class="bar">
+      <h1 class="display">Pre-orders<small id="count">—</small></h1>
+      <div class="bar__actions">
+        <button class="btn btn--teal btn--sm" id="exportBtn">Export CSV</button>
+        <button class="btn btn--ghost btn--sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Signed up</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty hidden">No signups yet.</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const SUPABASE_URL = "https://aknmkhtqywioqykqmywf.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_cPAt91mcUnQWlGlkghGz7w_lUSNGT4U";
+const SESSION_KEY = "tag_admin_session";
+
+const $ = (id) => document.getElementById(id);
+let DATA = [];
+
+const saveSession  = (s) => localStorage.setItem(SESSION_KEY, JSON.stringify({ access_token:s.access_token, refresh_token:s.refresh_token }));
+const getSession   = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); } catch(_){ return null; } };
+const clearSession = () => localStorage.removeItem(SESSION_KEY);
+
+async function signIn(email, password){
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+    method:'POST', headers:{ apikey:SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+    body: JSON.stringify({ email, password })
+  });
+  if(!res.ok) throw new Error('Invalid email or password.');
+  return res.json();
+}
+async function refreshSession(refresh_token){
+  const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
+    method:'POST', headers:{ apikey:SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+    body: JSON.stringify({ refresh_token })
+  });
+  if(!res.ok) throw new Error('expired');
+  return res.json();
+}
+async function fetchList(access_token){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/preorders?select=name,phone,email,created_at,source&order=created_at.desc`, {
+    headers:{ apikey:SUPABASE_ANON_KEY, Authorization:`Bearer ${access_token}` }
+  });
+  if(res.status === 401){ const e = new Error('unauthorized'); e.code = 401; throw e; }
+  if(!res.ok) throw new Error('Could not load the list.');
+  return res.json();
+}
+
+const esc = (s) => String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function fmtDate(iso){
+  if(!iso) return '';
+  return new Date(iso).toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+}
+
+function render(rows){
+  DATA = rows;
+  $('count').textContent = rows.length + (rows.length === 1 ? ' signup' : ' signups');
+  $('rows').innerHTML = rows.map(r => `<tr>
+    <td>${esc(r.name)}</td>
+    <td>${esc(r.phone)}</td>
+    <td class="email">${esc(r.email)}</td>
+    <td class="muted">${esc(fmtDate(r.created_at))}</td>
+  </tr>`).join('');
+  $('empty').classList.toggle('hidden', rows.length > 0);
+}
+
+const showPanel = () => { $('gate').classList.add('hidden');  $('panel').classList.remove('hidden'); };
+const showGate  = () => { $('panel').classList.add('hidden'); $('gate').classList.remove('hidden'); };
+
+async function loadWithSession(){
+  const s = getSession();
+  if(!s || !s.access_token){ showGate(); return; }
+  try {
+    render(await fetchList(s.access_token)); showPanel();
+  } catch(e){
+    if(e.code === 401 && s.refresh_token){
+      try {
+        const ns = await refreshSession(s.refresh_token);
+        saveSession(ns);
+        render(await fetchList(ns.access_token)); showPanel(); return;
+      } catch(_){}
+    }
+    clearSession(); showGate();
+  }
+}
+
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('loginBtn'), err = $('loginErr'), label = btn.textContent;
+  err.textContent = ''; btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const s = await signIn($('email').value.trim(), $('password').value);
+    saveSession(s);
+    render(await fetchList(s.access_token)); showPanel();
+  } catch(ex){
+    err.textContent = ex.message || 'Sign in failed.';
+  } finally {
+    btn.disabled = false; btn.textContent = label;
+  }
+});
+
+$('logoutBtn').addEventListener('click', () => { clearSession(); $('password').value = ''; showGate(); });
+
+$('exportBtn').addEventListener('click', () => {
+  const cols = ['name','phone','email','created_at','source'];
+  const cell = (v) => '"' + String(v == null ? '' : v).replace(/"/g,'""') + '"';
+  const lines = [cols.join(',')].concat(DATA.map(r => cols.map(c => cell(r[c])).join(',')));
+  const blob = new Blob([lines.join('\r\n')], { type:'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `american-gift-preorders-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+
+loadWithSession();
+</script>
+</body>
+</html>
