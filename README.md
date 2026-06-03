@@ -1,7 +1,7 @@
 # The American Gift — Pre-order Landing Page
 
 Single-page static site for **The American Gift** by Eduardo G. "Eddy" Perez, Jr.
-(Wiley, Fall 2026). Deployed via **GitHub Pages**.
+(Fall 2026). Deployed via **GitHub Pages**.
 
 ## Structure
 ```

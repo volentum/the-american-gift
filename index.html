@@ -185,6 +185,7 @@
 .preorder__lead{ color:var(--graphite); font-size:1.15rem; max-width:46ch; margin:22px auto 0; }
 .form{ margin:42px auto 0; max-width:560px; }
 .form__row{ display:flex; gap:12px; }
+.form__row + .form__row{ margin-top:12px; }
 .form input{
   flex:1; min-width:0; font-family:var(--font); font-size:1rem;
   background:var(--card); border:1px solid var(--line); color:var(--bone);
@@ -265,7 +266,7 @@
     <div class="hero__copy">
       <div class="hero__tag reveal">
         <span class="rule rule--teal"></span>
-        <span class="kicker">A Book by Eddy Perez · Wiley</span>
+        <span class="kicker">A Book by Eddy Perez</span>
       </div>
       <h1 class="display reveal">The American <span class="gift">Gift</span></h1>
       <p class="hero__sub reveal">How the mortgage industry's Old Guard screwed America — <em>and why true brokers are taking it back.</em></p>
@@ -415,7 +416,10 @@
 
       <form class="form reveal" id="preorderForm" novalidate>
         <div class="form__row">
-          <input type="text" name="name" placeholder="First name" aria-label="First name" />
+          <input type="text" name="name" placeholder="First name" aria-label="First name" required />
+          <input type="tel" name="phone" placeholder="Phone number" aria-label="Phone number" required />
+        </div>
+        <div class="form__row">
           <input type="email" name="email" placeholder="Your email address" aria-label="Email address" required />
           <button type="submit" class="btn btn--teal">Notify me</button>
         </div>
@@ -433,7 +437,6 @@
         <div class="retail__btns">
           <a class="btn btn--ghost" href="#" onclick="return false;">Amazon <small>Soon</small></a>
           <a class="btn btn--ghost" href="#" onclick="return false;">Barnes &amp; Noble <small>Soon</small></a>
-          <a class="btn btn--ghost" href="#" onclick="return false;">Wiley <small>Soon</small></a>
         </div>
       </div>
     </div>
@@ -447,7 +450,7 @@
       <span class="mono">E</span>
       <span class="nav__name">The American Gift<br><span>by Eduardo G. Perez, Jr.</span></span>
     </div>
-    <div class="foot__meta">Published by <strong>Wiley</strong> · Coming Fall 2026 &nbsp;·&nbsp; © 2026 Eduardo G. Perez, Jr.</div>
+    <div class="foot__meta">Coming Fall 2026 &nbsp;·&nbsp; © 2026 Eduardo G. Perez, Jr.</div>
   </div>
 </footer>
 
@@ -489,12 +492,17 @@ form.addEventListener('submit', async (e) => {
   if (form.website && form.website.value) { form.classList.add('done'); return; }
 
   const name  = form.name.value.trim();
+  const phone = form.phone.value.trim();
   const email = form.email.value.trim();
-  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if(!ok){ form.email.focus(); form.email.style.borderColor = '#B56F48'; return; }
+
+  // All three are required. Phone is lenient — needs at least 7 digits
+  // (allows +, spaces, dashes, and parentheses).
+  if(!name){ form.name.focus(); form.name.style.borderColor = '#B56F48'; return; }
+  if((phone.match(/\d/g)||[]).length < 7){ form.phone.focus(); form.phone.style.borderColor = '#B56F48'; return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ form.email.focus(); form.email.style.borderColor = '#B56F48'; return; }
 
   const record = {
-    name, email,
+    name, phone, email,
     source: 'The American Gift — pre-order page',
     page: location.href
   };
