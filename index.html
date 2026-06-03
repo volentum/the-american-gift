@@ -193,6 +193,8 @@
 }
 .form input::placeholder{ color:#7c828b; }
 .form input:focus{ border-color:var(--teal); }
+/* honeypot — visually hidden; only bots fill it */
+.form__hp{ position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
 .form__note{ font-size:.82rem; color:var(--steel); margin-top:14px; letter-spacing:.02em; }
 .form__success{
   display:none; padding:30px; border:1px solid var(--teal);
@@ -417,6 +419,9 @@
           <input type="email" name="email" placeholder="Your email address" aria-label="Email address" required />
           <button type="submit" class="btn btn--teal">Notify me</button>
         </div>
+        <div class="form__hp" aria-hidden="true">
+          <label>Leave this field empty<input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+        </div>
         <p class="form__note">No spam. Just the launch date and presale access. The Old Guard built a system on confusion — we won't.</p>
         <div class="form__success" role="status">
           <strong>You're on the list.</strong> We'll email you the moment pre-orders go live for <em>The American Gift</em>.
@@ -461,12 +466,16 @@ document.querySelectorAll('.reveal').forEach((el,i) => {
 });
 
 // ===================== PRE-ORDER CAPTURE =====================
-// TO GO LIVE: paste your HighLevel Inbound Webhook URL between the quotes below.
-// In HighLevel:  Automation ▸ Workflows ▸ create/open a workflow ▸ add an
-// "Inbound Webhook" trigger ▸ copy the webhook URL it generates ▸ paste it here.
-// The form sends { name, email, source, page, submitted_at } as JSON.
-// While this is left empty, the form still validates and shows the success
-// message, but submissions are only kept locally (a safe demo — nothing is sent).
+// Primary store: YOUR OWN Supabase database. Fill these in from your Supabase
+// project (Project Settings ▸ API):
+//   SUPABASE_URL      = the "Project URL"  (e.g. https://abcdwxyz.supabase.co)
+//   SUPABASE_ANON_KEY = the "anon public" / "publishable" key
+// The anon/publishable key is SAFE to expose publicly — the table is locked down
+// by Row Level Security (insert-only). NEVER put the service_role / secret key here.
+const SUPABASE_URL      = "";
+const SUPABASE_ANON_KEY = "";
+
+// Optional second destination: a HighLevel Inbound Webhook (leave "" to skip).
 const HIGHLEVEL_WEBHOOK_URL = "";
 
 const form = document.getElementById('preorderForm');
@@ -474,43 +483,66 @@ const submitBtn = form.querySelector('button[type="submit"]');
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const name = form.name.value.trim();
+
+  // Spam honeypot: real people leave the hidden "website" field empty; bots fill
+  // it. Quietly show success without storing anything.
+  if (form.website && form.website.value) { form.classList.add('done'); return; }
+
+  const name  = form.name.value.trim();
   const email = form.email.value.trim();
   const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if(!ok){ form.email.focus(); form.email.style.borderColor = '#B56F48'; return; }
 
-  const payload = {
+  const record = {
     name, email,
     source: 'The American Gift — pre-order page',
-    page: location.href,
-    submitted_at: new Date().toISOString()
+    page: location.href
   };
 
-  if (HIGHLEVEL_WEBHOOK_URL) {
-    // Send the lead to HighLevel.
-    const label = submitBtn.textContent;
-    submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
-    try {
-      const res = await fetch(HIGHLEVEL_WEBHOOK_URL, {
+  const label = submitBtn.textContent;
+  submitBtn.disabled = true; submitBtn.textContent = 'Sending…';
+
+  try {
+    let sent = false;
+
+    // 1) Save to your Supabase database
+    if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/preorders', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(record)
+      });
+      // 201 = saved. 409 = duplicate email (already on the list) — also a success.
+      if (!res.ok && res.status !== 409) throw new Error('Supabase ' + res.status);
+      sent = true;
+    }
+
+    // 2) Optionally forward to HighLevel (never blocks the signup)
+    if (HIGHLEVEL_WEBHOOK_URL) {
+      await fetch(HIGHLEVEL_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-    } catch (err) {
-      // Let the visitor retry instead of silently losing the lead.
-      console.error('Pre-order submit failed:', err);
-      submitBtn.disabled = false; submitBtn.textContent = label;
-      form.email.style.borderColor = '#B56F48';
-      return;
+        body: JSON.stringify({ ...record, submitted_at: new Date().toISOString() })
+      }).catch(() => {});
+      sent = true;
     }
-  } else {
-    // No webhook configured yet — keep a local copy so nothing is lost in testing.
-    try {
+
+    // 3) Nothing configured yet — keep a local copy so test signups aren't lost
+    if (!sent) {
       const list = JSON.parse(localStorage.getItem('tag_waitlist')||'[]');
       list.push({ name, email, at: Date.now() });
       localStorage.setItem('tag_waitlist', JSON.stringify(list));
-    } catch(_){}
+    }
+  } catch (err) {
+    console.error('Pre-order submit failed:', err);
+    submitBtn.disabled = false; submitBtn.textContent = label;
+    form.email.style.borderColor = '#B56F48';
+    return; // keep the form up so the visitor can retry
   }
 
   form.classList.add('done');
