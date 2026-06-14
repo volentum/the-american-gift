@@ -98,6 +98,11 @@ a{ color:inherit; }
 .section{ position:relative; z-index:1; }
 .wrap{ max-width:var(--maxw); margin:0 auto; padding:0 40px; }
 
+/* ---- brand logo images ---- */
+.brandmark{ display:block; flex:none; width:36px; height:36px; }
+.brandmark--lg{ width:52px; height:52px; }
+.ep-lockup{ display:block; height:auto; width:100%; max-width:320px; }
+
 /* ---- 3D book mockup (img cover, real depth) ---- */
 .book{
   --bw: 300px; --bh: 337px; --bd: 34px;     /* matches cover-front ratio 0.891 */
